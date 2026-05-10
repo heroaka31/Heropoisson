@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}FishMarket – Fresh Fish Online{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<div style="background: linear-gradient(135deg, var(--ocean) 0%, var(--tide) 60%, var(--seafoam) 100%);
+            border-radius: 20px; padding: 4rem 3rem; margin-bottom: 3rem; text-align: center;
+            color: white; position: relative; overflow: hidden;">
+  <div style="position:absolute;inset:0;opacity:0.05;background:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:20px 20px;"></div>
+  <div style="position: relative;">
+    <div style="font-size:4rem;margin-bottom:1rem;">🐟</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:3rem;margin-bottom:1rem;line-height:1.1;">
+      Fresh Fish,<br>Straight to Your Door
+    </h1>
+    <p style="font-size:1.1rem;opacity:0.85;max-width:500px;margin:0 auto 2rem;">
+      Browse local fish shops, explore what's available, and order online with ease.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('shops') }}" class="btn btn-gold" style="font-size:1rem;padding:0.8rem 2rem;">
+        🏪 Browse Shops
+      </a>
+      {% if not user %}
+      <a href="{{ url_for('register') }}" class="btn btn-outline" style="color:white;border-color:white;font-size:1rem;padding:0.8rem 2rem;">
+        Join as Seller
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="grid grid-4 mb-3">
+  <div class="stat-box">
+    <div class="stat-icon">🏪</div>
+    <div><div class="stat-num">{{ shops|length }}</div><div class="stat-label">Active Shops</div></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">🐠</div>
+    <div><div class="stat-num">{{ fishes|length }}</div><div class="stat-label">Fish Listed</div></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">🚚</div>
+    <div><div class="stat-num">24h</div><div class="stat-label">Fast Delivery</div></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">✅</div>
+    <div><div class="stat-num">100%</div><div class="stat-label">Fresh Guaranteed</div></div>
+  </div>
+</div>
+
+<!-- LATEST FISH -->
+<h2 class="section-title">🌊 Latest Listings</h2>
+{% if fishes %}
+<div class="grid grid-3 mb-3">
+  {% for fish in fishes %}
+  <div class="card">
+    {% if fish.image_url %}
+      <img src="{{ fish.image_url }}" alt="{{ fish.name }}" class="fish-img">
+    {% else %}
+      <div class="fish-img-placeholder">🐟</div>
+    {% endif %}
+    <div class="card-body">
+      <div class="flex justify-between items-center mb-1">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;">{{ fish.name }}</h3>
+        {% if fish.available %}
+          <span class="badge badge-green">Orderable</span>
+        {% elif fish.stock_kg == 0 %}
+          <span class="badge badge-red">Out of Stock</span>
+        {% else %}
+          <span class="badge badge-gray">Not Available</span>
+        {% endif %}
+      </div>
+      {% if fish.species %}
+        <p class="text-muted mb-1" style="font-size:0.82rem;font-style:italic;">{{ fish.species }}</p>
+      {% endif %}
+      <p class="price mb-1">{{ "{:,.0f}".format(fish.price_per_kg) }} FCFA / kg</p>
+      <p class="text-muted mb-2" style="font-size:0.85rem;">
+        🏪 <a href="{{ url_for('shop_detail', shop_id=fish.shop_id) }}" class="link">{{ fish.shop.name }}</a>
+        &nbsp;·&nbsp; 📦 {{ fish.stock_kg }} kg in stock
+      </p>
+      <div style="display:flex;gap:0.5rem;">
+        <a href="{{ url_for('fish_detail', fish_id=fish.id) }}" class="btn btn-ocean btn-sm">View Details</a>
+        {% if fish.available %}
+          <a href="{{ url_for('place_order', fish_id=fish.id) }}" class="btn btn-primary btn-sm">Order Now</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty-state"><div class="empty-icon">🐟</div><p>No fish listed yet. Check back soon!</p></div>
+{% endif %}
+
+<!-- FEATURED SHOPS -->
+<h2 class="section-title">🏪 Open Shops</h2>
+{% if shops %}
+<div class="grid grid-3">
+  {% for shop in shops %}
+  <div class="card">
+    <div style="background:linear-gradient(135deg,var(--ocean),var(--tide));height:80px;display:flex;align-items:center;padding:1rem;">
+      <div style="font-size:2rem;margin-right:0.75rem;">{{ shop.logo_url or '🐟' }}</div>
+      <div>
+        <h3 style="color:white;font-family:'Playfair Display',serif;">{{ shop.name }}</h3>
+        {% if shop.city %}<p style="color:rgba(255,255,255,0.7);font-size:0.82rem;">📍 {{ shop.city }}</p>{% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      {% if shop.description %}<p class="text-muted mb-2" style="font-size:0.88rem;">{{ shop.description[:100] }}{% if shop.description|length > 100 %}…{% endif %}</p>{% endif %}
+      <p class="mb-2" style="font-size:0.85rem;"><strong>{{ shop.fishes|length }}</strong> fish listed</p>
+      <a href="{{ url_for('shop_detail', shop_id=shop.id) }}" class="btn btn-primary btn-sm">Visit Shop →</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty-state"><div class="empty-icon">🏪</div><p>No shops open yet.</p></div>
+{% endif %}
+
+{% endblock %}

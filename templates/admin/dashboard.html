@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – FishMarket{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>🔐 Admin Panel</h1>
+  <p>Platform oversight & user data management</p>
+</div>
+
+<div class="grid grid-3 mb-3">
+  <div class="stat-box">
+    <div class="stat-icon">👥</div>
+    <div><div class="stat-num">{{ user_count }}</div><div class="stat-label">Total Users</div></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">🏪</div>
+    <div><div class="stat-num">{{ shop_count }}</div><div class="stat-label">Shops</div></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">📦</div>
+    <div><div class="stat-num">{{ order_count }}</div><div class="stat-label">Total Orders</div></div>
+  </div>
+</div>
+
+<div class="grid grid-3">
+  <a href="{{ url_for('admin_users') }}" class="card" style="text-decoration:none;color:var(--text);">
+    <div class="card-body" style="text-align:center;padding:2rem;">
+      <div style="font-size:3rem;margin-bottom:0.75rem;">👥</div>
+      <h3 style="font-family:'Playfair Display',serif;">Manage Users</h3>
+      <p class="text-muted" style="font-size:0.9rem;margin-top:0.5rem;">
+        View personal details (PII), activate/deactivate accounts
+      </p>
+    </div>
+  </a>
+  <a href="{{ url_for('admin_shops') }}" class="card" style="text-decoration:none;color:var(--text);">
+    <div class="card-body" style="text-align:center;padding:2rem;">
+      <div style="font-size:3rem;margin-bottom:0.75rem;">🏪</div>
+      <h3 style="font-family:'Playfair Display',serif;">Manage Shops</h3>
+      <p class="text-muted" style="font-size:0.9rem;margin-top:0.5rem;">View all registered shops and their status</p>
+    </div>
+  </a>
+  <a href="{{ url_for('admin_orders') }}" class="card" style="text-decoration:none;color:var(--text);">
+    <div class="card-body" style="text-align:center;padding:2rem;">
+      <div style="font-size:3rem;margin-bottom:0.75rem;">📋</div>
+      <h3 style="font-family:'Playfair Display',serif;">All Orders</h3>
+      <p class="text-muted" style="font-size:0.9rem;margin-top:0.5rem;">Platform-wide order history</p>
+    </div>
+  </a>
+</div>
+{% endblock %}

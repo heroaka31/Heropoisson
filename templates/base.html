@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}FishMarket{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ocean:   #0a2540;
+      --tide:    #0e4d6e;
+      --seafoam: #1a9c8a;
+      --coral:   #e8533e;
+      --sand:    #f5ede0;
+      --gold:    #d4a843;
+      --white:   #ffffff;
+      --text:    #1a1a2e;
+      --muted:   #6c7a8d;
+      --card-bg: #ffffff;
+      --border:  #e2e8f0;
+      --success: #2d7d46;
+      --danger:  #c0392b;
+      --warning: #d4a017;
+      --info:    #1565a0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sand);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--ocean);
+      padding: 0 2rem;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; color: var(--gold);
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+    .nav-brand span { color: var(--seafoam); }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      padding: 0.5rem 0.9rem; border-radius: 6px;
+      font-size: 0.9rem; font-weight: 500; transition: all 0.2s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+    .nav-links .btn-nav {
+      background: var(--seafoam); color: var(--white);
+      padding: 0.45rem 1.1rem; border-radius: 20px; font-weight: 600;
+    }
+    .nav-links .btn-nav:hover { background: var(--gold); }
+    .nav-role {
+      font-size: 0.7rem; background: var(--gold); color: var(--ocean);
+      padding: 2px 8px; border-radius: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-left: 0.5rem; vertical-align: middle;
+    }
+
+    /* ── FLASH ── */
+    .flash-container { max-width: 1200px; margin: 1rem auto 0; padding: 0 2rem; }
+    .alert {
+      padding: 0.85rem 1.2rem; border-radius: 8px; font-size: 0.9rem;
+      margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;
+      font-weight: 500;
+    }
+    .alert-success { background: #d4edda; color: var(--success); border-left: 4px solid var(--success); }
+    .alert-danger  { background: #f8d7da; color: var(--danger);  border-left: 4px solid var(--danger); }
+    .alert-warning { background: #fff3cd; color: #856404;        border-left: 4px solid var(--warning); }
+    .alert-info    { background: #cce5ff; color: var(--info);    border-left: 4px solid var(--info); }
+
+    /* ── MAIN CONTENT ── */
+    main { flex: 1; max-width: 1200px; margin: 0 auto; padding: 2rem; width: 100%; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card-bg); border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(10,37,64,0.08);
+      overflow: hidden; transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover { box-shadow: 0 6px 24px rgba(10,37,64,0.15); transform: translateY(-2px); }
+    .card-body { padding: 1.25rem; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-block; padding: 0.6rem 1.4rem;
+      border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      cursor: pointer; border: none; text-decoration: none;
+      transition: all 0.2s; text-align: center; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary   { background: var(--seafoam); color: #fff; }
+    .btn-primary:hover { background: #158474; }
+    .btn-ocean     { background: var(--ocean); color: #fff; }
+    .btn-ocean:hover { background: var(--tide); }
+    .btn-danger    { background: var(--coral); color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-outline {
+      background: transparent; color: var(--ocean);
+      border: 2px solid var(--ocean);
+    }
+    .btn-outline:hover { background: var(--ocean); color: #fff; }
+    .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.82rem; border-radius: 6px; }
+    .btn-gold { background: var(--gold); color: var(--ocean); }
+    .btn-gold:hover { background: #b8912e; }
+
+    /* ── FORMS ── */
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-weight: 600; font-size: 0.87rem; margin-bottom: 0.4rem; color: var(--ocean); }
+    input[type=text], input[type=email], input[type=password],
+    input[type=number], input[type=url], textarea, select {
+      width: 100%; padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+      transition: border-color 0.2s; background: #fafbfc;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: var(--seafoam);
+      box-shadow: 0 0 0 3px rgba(26,156,138,0.15);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .form-check { display: flex; align-items: center; gap: 0.5rem; }
+    .form-check input { width: auto; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: linear-gradient(135deg, var(--ocean) 0%, var(--tide) 100%);
+      color: white; padding: 3rem 2rem; margin-bottom: 2rem;
+      border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l8.113 8.113-1.414 1.414L34.828 0h2.828zM22.344 0L14.23 8.113l1.414 1.414L25.172 0h-2.828zM32 0l9.899 9.9-1.415 1.414L30 1.414 19.516 11.9 18.1 10.485 28 .586 29.414 0H32z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif; font-size: 2.2rem;
+      position: relative;
+    }
+    .page-header p { opacity: 0.8; margin-top: 0.4rem; position: relative; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .badge-green  { background: #d4edda; color: var(--success); }
+    .badge-red    { background: #f8d7da; color: var(--danger); }
+    .badge-orange { background: #fff3cd; color: #856404; }
+    .badge-blue   { background: #cce5ff; color: var(--info); }
+    .badge-gray   { background: #e2e8f0; color: #475569; }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { background: var(--ocean); color: white; padding: 0.75rem 1rem; text-align: left; font-weight: 600; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ocean); color: rgba(255,255,255,0.6);
+      text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: auto;
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── GRID ── */
+    .grid { display: grid; gap: 1.5rem; }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+
+    /* ── STAT BOXES ── */
+    .stat-box {
+      background: white; border-radius: 12px; padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(10,37,64,0.08);
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .stat-icon { font-size: 2rem; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--ocean); }
+    .stat-label { font-size: 0.82rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── MISC ── */
+    .text-muted  { color: var(--muted); }
+    .text-center { text-align: center; }
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 0.5rem; }
+    .gap-2 { gap: 1rem; }
+    .fish-img {
+      width: 100%; height: 180px; object-fit: cover;
+      background: linear-gradient(135deg, #0e4d6e, #1a9c8a);
+    }
+    .fish-img-placeholder {
+      width: 100%; height: 180px;
+      background: linear-gradient(135deg, var(--tide), var(--seafoam));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; color: var(--ocean); margin-bottom: 1.5rem;
+    }
+    .price {
+      font-family: 'Playfair Display', serif; color: var(--seafoam);
+      font-size: 1.2rem; font-weight: 700;
+    }
+    .form-box {
+      background: white; border-radius: 16px; padding: 2rem;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.1); max-width: 520px; margin: 0 auto;
+    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    a.link { color: var(--seafoam); text-decoration: none; font-weight: 500; }
+    a.link:hover { text-decoration: underline; }
+    .empty-state { text-align: center; padding: 3rem; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="{{ url_for('index') }}" class="nav-brand">🐟 Fish<span>Market</span></a>
+    <div class="nav-links">
+      <a href="{{ url_for('shops') }}">Shops</a>
+      {% if user %}
+        {% if user.role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+        {% elif user.role == 'seller' %}
+          <a href="{{ url_for('seller_dashboard') }}">My Shop</a>
+          <a href="{{ url_for('seller_orders') }}">Orders</a>
+        {% else %}
+          <a href="{{ url_for('my_orders') }}">My Orders</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">
+          {{ user.full_name.split()[0] }}
+          <span class="nav-role">{{ user.role }}</span>
+          &nbsp;·&nbsp;Logout
+        </a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="btn-nav">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer>
+  <strong>FishMarket</strong> &mdash; Fresh fish, direct from local sellers &mdash; &copy; {{ 2025 }}
+</footer>
+
+</body>
+</html>

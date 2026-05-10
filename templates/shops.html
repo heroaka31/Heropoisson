@@ -1,0 +1,47 @@
+<!-- FILE: templates/shops.html -->
+{% extends "base.html" %}
+{% block title %}All Shops – FishMarket{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>🏪 Fish Shops</h1>
+  <p>Discover local fish sellers near you</p>
+</div>
+
+<form method="GET" style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;">
+  <input type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search shops…" style="max-width:300px;">
+  <select name="city" style="max-width:200px;">
+    <option value="">All cities</option>
+    {% for c in cities %}<option value="{{ c }}" {% if request.args.get('city')==c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-primary">Search</button>
+  {% if request.args.get('q') or request.args.get('city') %}
+    <a href="{{ url_for('shops') }}" class="btn btn-outline">Clear</a>
+  {% endif %}
+</form>
+
+{% if shops %}
+<div class="grid grid-3">
+  {% for shop in shops %}
+  <div class="card">
+    <div style="background:linear-gradient(135deg,var(--ocean),var(--tide));padding:1.25rem;">
+      <div class="flex items-center gap-2">
+        <div style="font-size:2rem;">{{ shop.logo_url or '🐟' }}</div>
+        <div>
+          <h3 style="color:white;font-family:'Playfair Display',serif;">{{ shop.name }}</h3>
+          <p style="color:rgba(255,255,255,0.7);font-size:0.82rem;">📍 {{ shop.location }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      {% if not shop.is_open %}<span class="badge badge-red mb-2">Closed</span>{% else %}<span class="badge badge-green mb-2">Open</span>{% endif %}
+      {% if shop.description %}<p class="text-muted mb-2" style="font-size:0.88rem;">{{ shop.description[:120] }}{% if shop.description|length > 120 %}…{% endif %}</p>{% endif %}
+      <p class="mb-2" style="font-size:0.85rem;"><strong>{{ shop.fishes|length }}</strong> fish available</p>
+      <a href="{{ url_for('shop_detail', shop_id=shop.id) }}" class="btn btn-primary btn-sm">Visit Shop →</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">🔍</div><p>No shops found.</p></div>
+{% endif %}
+{% endblock %}

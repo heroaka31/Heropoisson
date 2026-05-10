@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ shop.name }} – FishMarket{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="flex items-center gap-2">
+    <span style="font-size:3rem;">{{ shop.logo_url or '🐟' }}</span>
+    <div>
+      <h1>{{ shop.name }}</h1>
+      <p>📍 {{ shop.location }}{% if shop.city %} &middot; {{ shop.city }}{% endif %}</p>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;gap:1rem;align-items:center;margin-bottom:2rem;flex-wrap:wrap;">
+  {% if shop.is_open %}
+    <span class="badge badge-green" style="font-size:0.9rem;padding:6px 14px;">✅ Open for Orders</span>
+  {% else %}
+    <span class="badge badge-red" style="font-size:0.9rem;padding:6px 14px;">❌ Currently Closed</span>
+  {% endif %}
+  {% if shop.description %}<p class="text-muted">{{ shop.description }}</p>{% endif %}
+</div>
+
+<h2 class="section-title">Available Fish</h2>
+{% if fishes %}
+<div class="grid grid-3">
+  {% for fish in fishes %}
+  <div class="card">
+    {% if fish.image_url %}
+      <img src="{{ fish.image_url }}" alt="{{ fish.name }}" class="fish-img">
+    {% else %}
+      <div class="fish-img-placeholder">🐠</div>
+    {% endif %}
+    <div class="card-body">
+      <div class="flex justify-between items-center mb-1">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;">{{ fish.name }}</h3>
+        {% if fish.available %}
+          <span class="badge badge-green">Orderable</span>
+        {% elif fish.stock_kg == 0 %}
+          <span class="badge badge-red">Out of Stock</span>
+        {% else %}
+          <span class="badge badge-gray">Not Available</span>
+        {% endif %}
+      </div>
+      {% if fish.species %}
+        <p class="text-muted mb-1" style="font-style:italic;font-size:0.82rem;">{{ fish.species }}</p>
+      {% endif %}
+      <p class="price mb-1">{{ "{:,.0f}".format(fish.price_per_kg) }} FCFA / kg</p>
+      <p class="text-muted mb-2" style="font-size:0.85rem;">📦 {{ fish.stock_kg }} kg in stock</p>
+      {% if fish.description %}
+        <p class="text-muted mb-2" style="font-size:0.85rem;">{{ fish.description[:100] }}</p>
+      {% endif %}
+      <div style="display:flex;gap:0.5rem;">
+        <a href="{{ url_for('fish_detail', fish_id=fish.id) }}" class="btn btn-ocean btn-sm">Details</a>
+        {% if fish.available %}
+          <a href="{{ url_for('place_order', fish_id=fish.id) }}" class="btn btn-primary btn-sm">Order</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">🐟</div><p>No fish listed in this shop yet.</p></div>
+{% endif %}
+
+{% endblock %}
