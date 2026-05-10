@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Rapport par type de poisson</h1>
+
+{% if stats %}
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th> Type de poisson</th>
+        <th>Nb ventes</th>
+        <th>Total kg</th>
+        <th>Chiffre d'affaires</th>
+        <th>Prix moy/kg</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for poisson, s in stats.items() %}
+      <tr>
+        <td><span class="badge">{{ poisson }}</span></td>
+        <td>{{ s.nb }}</td>
+        <td>{{ "%.1f"|format(s.quantite) }} kg</td>
+        <td><strong>{{ "%.0f"|format(s.total) }} FCFA</strong></td>
+        <td>{{ "%.0f"|format(s.total / s.quantite) }} FCFA</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>TOTAL</strong></td>
+        <td><strong>{{ stats.values()|sum(attribute='nb') }}</strong></td>
+        <td><strong>{{ "%.1f"|format(stats.values()|sum(attribute='quantite')) }} kg</strong></td>
+        <td><strong>{{ "%.0f"|format(stats.values()|sum(attribute='total')) }} FCFA</strong></td>
+        <td>—</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+{% else %}
+  <div class="empty">Aucune donnée disponible pour le rapport.</div>
+{% endif %}
+
+{% endblock %}

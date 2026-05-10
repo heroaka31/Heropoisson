@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{% if vente %} Modifier la vente{% else %}Nouvelle vente{% endif %}</h1>
+
+<div class="form-card">
+  <form method="POST">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date de vente</label>
+        <input type="date" name="date_vente" required
+               value="{{ vente.date_vente.isoformat() if vente else today }}">
+      </div>
+      <div class="form-group">
+        <label>Type de poisson</label>
+        <input type="text" name="type_poisson" placeholder="Ex: Tilapia, Capitaine, Carpe…" required
+               value="{{ vente.type_poisson if vente else '' }}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label> Quantité (kg)</label>
+        <input type="number" name="quantite_kg" step="0.1" min="0.1" placeholder="0.0" required
+               value="{{ vente.quantite_kg if vente else '' }}">
+      </div>
+      <div class="form-group">
+        <label> Prix par kg (FCFA)</label>
+        <input type="number" name="prix_kg" step="1" min="1" placeholder="0" required
+               value="{{ vente.prix_kg if vente else '' }}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label> Vendeur</label>
+        <input type="text" name="vendeur" placeholder="Nom du vendeur" required
+               value="{{ vente.vendeur if vente else '' }}">
+      </div>
+      <div class="form-group">
+        <label> Lieu de vente</label>
+        <input type="text" name="lieu" placeholder="Marché, quartier…" required
+               value="{{ vente.lieu if vente else '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label> Notes (optionnel)</label>
+      <textarea name="notes" rows="3" placeholder="Observations, qualité du poisson…">{{ vente.notes if vente else '' }}</textarea>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Annuler</a>
+      <button type="submit" class="btn btn-primary">
+        {% if vente %} Enregistrer les modifications{% else %}Enregistrer la vente{% endif %}
+      </button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

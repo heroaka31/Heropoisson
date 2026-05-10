@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Liste des Ventes</h1>
+
+<div class="cards">
+  <div class="card blue">
+    <div class="card-label">Total ventes</div>
+    <div class="card-value">{{ nb_ventes }}</div>
+  </div>
+  <div class="card green">
+    <div class="card-label">Total kg vendus</div>
+    <div class="card-value">{{ "%.1f"|format(total_kg) }} kg</div>
+  </div>
+  <div class="card orange">
+    <div class="card-label">Chiffre d'affaires</div>
+    <div class="card-value">{{ "%.0f"|format(total_global) }} FCFA</div>
+  </div>
+</div>
+
+{% if ventes %}
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Poisson</th>
+        <th>Qty (kg)</th>
+        <th>Prix/kg</th>
+        <th>Total</th>
+        <th>Vendeur</th>
+        <th>Lieu</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in ventes %}
+      <tr>
+        <td>{{ v.date_vente.strftime('%d/%m/%Y') }}</td>
+        <td><span class="badge">{{ v.type_poisson }}</span></td>
+        <td>{{ v.quantite_kg }}</td>
+        <td>{{ v.prix_kg }} FCFA</td>
+        <td><strong>{{ v.total }} FCFA</strong></td>
+        <td>{{ v.vendeur }}</td>
+        <td>{{ v.lieu }}</td>
+        <td>
+          <a href="{{ url_for('modifier', id=v.id) }}" class="btn btn-sm"></a>
+          <a href="{{ url_for('supprimer', id=v.id) }}" class="btn btn-sm btn-danger"
+             onclick="return confirm('Supprimer cette vente ?')"></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <div class="empty">Aucune vente enregistrée. <a href="{{ url_for('ajouter') }}">Ajouter la première →</a></div>
+{% endif %}
+
+{% endblock %}
