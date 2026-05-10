@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Shops – Admin{% endblock %}
+{% block content %}
+<div class="page-header"><h1>🏪 All Shops</h1><p>Overview of every registered shop</p></div>
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Shop Name</th><th>City</th><th>Seller</th><th>Seller Email (PII)</th><th>Fish</th><th>Status</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for shop in shops %}
+      <tr>
+        <td>{{ shop.id }}</td>
+        <td><a href="{{ url_for('shop_detail', shop_id=shop.id) }}" class="link">{{ shop.name }}</a></td>
+        <td>{{ shop.city or '—' }}</td>
+        <td>{{ shop.seller.full_name }}</td>
+        <td>{{ shop.seller.email }}</td>
+        <td>{{ shop.fishes|length }}</td>
+        <td>{% if shop.is_open %}<span class="badge badge-green">Open</span>{% else %}<span class="badge badge-red">Closed</span>{% endif %}</td>
+        <td>{{ shop.created_at.strftime('%d %b %Y') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="mt-2"><a href="{{ url_for('admin_dashboard') }}" class="link">← Back to Dashboard</a></div>
+{% endblock %}
